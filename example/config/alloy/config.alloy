@@ -11,6 +11,13 @@ logging {
 	write_to = [loki.relabel.alloy_logs.receiver]
 }
 
+loki.process "regex" { 
+	stage.structured_metadata_regex { 
+		regex = "j.b"
+	}
+	forward_to = [loki.write.loki.receiver]
+}
+
 loki.relabel "alloy_logs"{
 	rule {
 		target_label = "instance"
@@ -22,7 +29,7 @@ loki.relabel "alloy_logs"{
 		replacement = "integrations/self"
 	}
 
-	forward_to = [loki.write.loki.receiver]
+	forward_to = [loki.process.regex.receiver]
 }
 
 tracing {
